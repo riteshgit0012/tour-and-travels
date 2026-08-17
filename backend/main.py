@@ -38,7 +38,7 @@ app = FastAPI(title="Sanatan Tour and Travels API", version="1.0.0", lifespan=li
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173", "http://127.0.0.1:5173",
-                   "http://localhost:3000", "http://localhost:4173"],
+                   "http://localhost:3000", "http://localhost:4173","https://sanatantourandtravels.vercel.app",],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -64,7 +64,7 @@ def get_fleet():
     return {"fleet": seed_data.FLEET}
 
 @app.get("/api/features", tags=["content"])
-def get_features():
+def get_features(): 
     return {"features": seed_data.FEATURES}
 
 @app.get("/api/destinations", tags=["content"])
