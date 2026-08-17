@@ -6,7 +6,9 @@ import {
   STATS,
 } from "./data/siteData";
 
-const BASE = "/api";
+const BASE = import.meta.env.VITE_API_URL
+  ? `${import.meta.env.VITE_API_URL}/api`
+  : "/api";
 
 async function getJSON(path) {
   const res = await fetch(`${BASE}${path}`, {
