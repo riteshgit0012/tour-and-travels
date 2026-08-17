@@ -26,6 +26,21 @@ const CATEGORIES = [
   "Budget Pick",
 ];
 
+const API_BASE = import.meta.env.VITE_API_URL || '';
+
+function resolveImageUrl(path) {
+  if (!path) return '';
+  const trimmed = path.trim();
+  if (trimmed === '') return '';
+
+  if (/^https?:\/\//i.test(trimmed)) {
+    return trimmed;
+  }
+
+  const normalizedPath = trimmed.startsWith('/') ? trimmed : `/${trimmed}`;
+  return `${API_BASE}${normalizedPath}`;
+}
+
 const EMPTY_FORM = {
   name: "",
   vtype: "",
@@ -458,9 +473,10 @@ export default function AdminAddCar() {
                       <div style={{ aspectRatio: "16/10", overflow: "hidden", background: "var(--c-navy)" }}>
                         {car.image_url ? (
                           <img
-                            src={car.image_url}
+                            src={resolveImageUrl(car.image_url)}
                             alt={car.name}
                             loading="lazy"
+                            onError={(e) => { e.target.style.opacity = "0.2"; }}
                             style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
                           />
                         ) : (

@@ -6,6 +6,21 @@ import { fetchGalleryImages, addGalleryImage, deleteGalleryImage } from "../api"
 
 const CATEGORIES = ["Temples", "Rituals", "Fleet", "Nature", "General"];
 
+const API_BASE = import.meta.env.VITE_API_URL || '';
+
+function resolveImageUrl(path) {
+  if (!path) return '';
+  const trimmed = path.trim();
+  if (trimmed === '') return '';
+
+  if (/^https?:\/\//i.test(trimmed)) {
+    return trimmed;
+  }
+
+  const normalizedPath = trimmed.startsWith('/') ? trimmed : `/${trimmed}`;
+  return `${API_BASE}${normalizedPath}`;
+}
+
 const pageMotion = {
   initial: { opacity: 0, y: 16 },
   animate: { opacity: 1, y: 0 },
@@ -354,9 +369,10 @@ export default function AdminDashboard() {
                     >
                       <div style={{ aspectRatio: "4/3", overflow: "hidden", background: "#e8e0d4" }}>
                         <img
-                          src={img.src}
+                          src={resolveImageUrl(img.src)}
                           alt={img.title}
                           loading="lazy"
+                          onError={(e) => { e.target.style.opacity = "0.2"; }}
                           style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
                         />
                       </div>
