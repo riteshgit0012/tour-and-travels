@@ -5,7 +5,6 @@ import { FaPlus, FaTimes, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 import { fetchGalleryImages } from "../api";
 import { GALLERY } from "../data/siteData";
-import { resolveImageUrl } from "../utils/resolveImageUrl";
 
 const pageMotion = {
   initial: { opacity: 0, y: 16 },
@@ -13,6 +12,22 @@ const pageMotion = {
   exit: { opacity: 0, y: -10 },
   transition: { duration: 0.4, ease: "easeOut" },
 };
+
+// Function seedha isi file me define kar diya, alag file ki zaroorat nahi
+const API_BASE = import.meta.env.VITE_API_URL || '';
+
+function resolveImageUrl(path) {
+  if (!path) return '';
+  const trimmed = path.trim();
+  if (trimmed === '') return '';
+
+  if (/^https?:\/\//i.test(trimmed)) {
+    return trimmed;
+  }
+
+  const normalizedPath = trimmed.startsWith('/') ? trimmed : `/${trimmed}`;
+  return `${API_BASE}${normalizedPath}`;
+}
 
 export default function Gallery() {
   const [images, setImages] = useState(GALLERY);
@@ -46,7 +61,6 @@ export default function Gallery() {
     [filtered.length]
   );
 
-  // Keyboard controls for the lightbox.    
   useEffect(() => {
     if (lightbox === null) return;
     const onKey = (e) => {

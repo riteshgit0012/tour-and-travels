@@ -165,6 +165,38 @@ export const FEATURES = [
     text: "Thousands of happy pilgrims and families who rate our service and rates highly.",
   },
 ];
+export const GALLERY = [
+  {
+    src: "https://picsum.photos/seed/ayodhya-gallery1/800/600",
+    title: "Ram Janmabhoomi",
+    category: "Temples",
+  },
+  {
+    src: "https://picsum.photos/seed/ayodhya-gallery2/800/600",
+    title: "Saryu Ghat at Dusk",
+    category: "Ghats",
+  },
+  {
+    src: "https://picsum.photos/seed/ayodhya-gallery3/800/600",
+    title: "Hanuman Garhi",
+    category: "Temples",
+  },
+  {
+    src: "https://picsum.photos/seed/ayodhya-gallery4/800/600",
+    title: "Our Comfortable Fleet",
+    category: "Vehicles",
+  },
+  {
+    src: "https://picsum.photos/seed/ayodhya-gallery5/800/600",
+    title: "Ram Ki Paidi",
+    category: "Ghats",
+  },
+  {
+    src: "https://picsum.photos/seed/ayodhya-gallery6/800/600",
+    title: "Kanak Bhawan",
+    category: "Temples",
+  },
+];
 
 export const DESTINATIONS = [
   {
