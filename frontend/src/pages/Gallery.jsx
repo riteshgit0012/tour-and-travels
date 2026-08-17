@@ -1,10 +1,9 @@
 import { useEffect, useMemo, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import { FaPlus, FaTimes, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { FaPlus, FaTimes, FaChevronLeft, FaChevronRight, FaImage } from "react-icons/fa";
 
 import { fetchGalleryImages } from "../api";
-import { GALLERY } from "../data/siteData";
 
 const pageMotion = {
   initial: { opacity: 0, y: 16 },
@@ -13,7 +12,6 @@ const pageMotion = {
   transition: { duration: 0.4, ease: "easeOut" },
 };
 
-// Function seedha isi file me define kar diya, alag file ki zaroorat nahi
 const API_BASE = import.meta.env.VITE_API_URL || '';
 
 function resolveImageUrl(path) {
@@ -30,13 +28,26 @@ function resolveImageUrl(path) {
 }
 
 export default function Gallery() {
-  const [images, setImages] = useState(GALLERY);
+  const [images, setImages] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("All");
-  const [lightbox, setLightbox] = useState(null); // index into `filtered`
+  const [lightbox, setLightbox] = useState(null);
 
   useEffect(() => {
     let alive = true;
-    fetchGalleryImages().then((d) => alive && d?.length && setImages(d));
+    fetchGalleryImages()
+      .then((d) => {
+        if (alive) {
+          setImages(d?.length ? d : []);
+          setLoading(false);
+        }
+      })
+      .catch(() => {
+        if (alive) {
+          setImages([]);
+          setLoading(false);
+        }
+      });
     return () => {
       alive = false;
     };
@@ -98,50 +109,68 @@ export default function Gallery() {
       {/* Grid */}
       <section className="section bg-ivory">
         <div className="container">
-          <div className="gallery-filters">
-            {categories.map((c) => (
-              <button
-                key={c}
-                className={`filter-btn ${filter === c ? "active" : ""}`}
-                onClick={() => setFilter(c)}
-              >
-                {c}
-              </button>
-            ))}
-          </div>
+          {loading ? (
+            <div style={{ textAlign: "center", padding: "60px 0", color: "var(--c-ink-soft)" }}>
+              Loading gallery...
+            </div>
+          ) : images.length === 0 ? (
+            <div style={{
+              textAlign: "center", padding: "80px 0", color: "var(--c-ink-faint)",
+              background: "var(--c-surface)", borderRadius: "var(--radius-lg)",
+              border: "2px dashed var(--c-line)",
+            }}>
+              <FaImage style={{ fontSize: "3rem", marginBottom: 14, opacity: 0.25 }} />
+              <p style={{ fontWeight: 600 }}>No images available right now</p>
+              <p style={{ fontSize: "0.88rem", marginTop: 4 }}>Please check back shortly.</p>
+            </div>
+          ) : (
+            <>
+              <div className="gallery-filters">
+                {categories.map((c) => (
+                  <button
+                    key={c}
+                    className={`filter-btn ${filter === c ? "active" : ""}`}
+                    onClick={() => setFilter(c)}
+                  >
+                    {c}
+                  </button>
+                ))}
+              </div>
 
-          <motion.div layout className="gallery-grid">
-            <AnimatePresence>
-              {filtered.map((img, i) => (
-                <motion.figure
-                  layout
-                  key={img.src}
-                  className="gallery-item"
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.35 }}
-                  onClick={() => setLightbox(i)}
-                >
-                  <img
-                    src={resolveImageUrl(img.src)}
-                    alt={img.title}
-                    loading="lazy"
-                    onError={(e) => {
-                      e.target.style.display = "none";
-                    }}
-                  />
-                  <span className="gallery-plus">
-                    <FaPlus />
-                  </span>
-                  <figcaption className="gallery-cap">
-                    <span>{img.category}</span>
-                    <b>{img.title}</b>
-                  </figcaption>
-                </motion.figure>
-              ))}
-            </AnimatePresence>
-          </motion.div>
+              <motion.div layout className="gallery-grid">
+                <AnimatePresence>
+                  {filtered.map((img, i) => (
+                    <motion.figure
+                      layout
+                      key={img.src}
+                      className="gallery-item"
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      transition={{ duration: 0.35 }}
+                      onClick={() => setLightbox(i)}
+                    >
+                      <img
+                        src={resolveImageUrl(img.src)}
+                        alt={img.title}
+                        loading="lazy"
+                        onError={(e) => {
+                          e.target.style.display = "none";
+                        }}
+                      />
+                      <span className="gallery-plus">
+                        <FaPlus />
+                      </span>
+                      <figcaption className="gallery-cap">
+                        <span>{img.category}</span>
+                        <b>{img.title}</b>
+                      </figcaption>
+                    </motion.figure>
+                  ))}
+                </AnimatePresence>
+              </motion.div>
+            </>
+          )}
         </div>
       </section>
 
