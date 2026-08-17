@@ -3,7 +3,14 @@ import { motion } from 'framer-motion';
 import { FaArrowRight } from 'react-icons/fa';
 
 export default function FleetCard({ vehicle, index = 0 }) {
-  const imageSrc = vehicle.image_url || vehicle.image || '';
+  // const imageSrc = vehicle.image_url || vehicle.image || '';
+  const rawImage = vehicle.image_url || vehicle.image || '';
+
+const imageSrc = rawImage.startsWith('http')
+  ? rawImage
+  : rawImage
+  ? `${import.meta.env.VITE_API_URL}${rawImage}`
+  : '';
   const hasPhoto = imageSrc.trim() !== '';
 
   return (
